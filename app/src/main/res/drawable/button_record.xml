@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Big circular record button with a premium ring. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="14dp" />
+        <shape android:shape="oval">
             <solid android:color="@color/record_red_dark" />
+            <stroke android:width="3dp" android:color="@color/gold" />
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape android:shape="oval">
+            <solid android:color="@color/surface2" />
+            <stroke android:width="3dp" android:color="@color/stroke_glass" />
         </shape>
     </item>
     <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="14dp" />
+        <shape android:shape="oval">
             <solid android:color="@color/record_red" />
+            <stroke android:width="3dp" android:color="@color/text_primary" />
         </shape>
     </item>
 </selector>

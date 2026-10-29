@@ -202,7 +202,12 @@ class MainActivity : Activity() {
     @Suppress("DEPRECATION")
     private fun startRecording() {
         val noiseOn = switchNoiseCancel.isChecked
-        val processor = NoiseProcessor(SAMPLE_RATE, currentStrength(), noiseOn)
+        // AI mode first: try to open an RNNoise session. If the native
+        // library is unavailable on this device, RnNoise.create() returns
+        // null and NoiseProcessor automatically runs DSP-only — the
+        // recording never breaks because of the native library.
+        val aiSession = if (noiseOn) RnNoise.create() else null
+        val processor = NoiseProcessor(SAMPLE_RATE, currentStrength(), noiseOn, aiSession)
         val minBuffer = AudioRecord.getMinBufferSize(
             SAMPLE_RATE,
             AudioFormat.CHANNEL_IN_MONO,
@@ -246,7 +251,11 @@ class MainActivity : Activity() {
         samplesWritten = 0
         recordState = RecordState.RECORDING
         updateRecordingButtons()
-        tvRecordingState.text = if (noiseOn) "Recording… noise cancellation ON" else "Recording… RAW (noise cancellation OFF)"
+        tvRecordingState.text = when {
+            !noiseOn -> "Recording… RAW (noise cancellation OFF)"
+            processor.usingAi -> "Recording… AI noise cancellation ON (RNNoise)"
+            else -> "Recording… noise cancellation ON (DSP)"
+        }
         tvTimer.text = "00:00"
         mainHandler.removeCallbacks(timerRunnable)
         mainHandler.post(timerRunnable)
@@ -292,6 +301,7 @@ class MainActivity : Activity() {
             } catch (e: IllegalStateException) {
                 // Already stopped.
             }
+            processor.close()
         }
         recordingThread?.start()
     }
@@ -573,18 +583,41 @@ class MainActivity : Activity() {
                 val bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() }
                     ?: throw IllegalStateException("Could not read the selected file")
                 val parsed = WavFile.readWav(bytes)
-                // Offline cleaning always applies the DSP (that is the point of
-                // the button), using the currently selected strength.
-                val processor = NoiseProcessor(parsed.sampleRate, currentStrength(), true)
+                // Offline cleaning always applies processing (that is the point
+                // of the button), using the currently selected strength.
+                // AI first: an RNNoise session is used when the native library
+                // is available AND the file is 48 kHz (RNNoise is 48 kHz only);
+                // otherwise NoiseProcessor falls back to DSP-only on its own.
+                // Channels are processed separately (RNNoise/gate are mono) and
+                // chunks are aligned to the 10 ms frame so state carries across.
                 val cleaned = parsed.samples.copyOf()
-                // Process in chunks so gate/high-pass state carries across correctly.
-                var offset = 0
-                while (offset < cleaned.size) {
-                    val chunkSize = minOf(4096, cleaned.size - offset)
-                    val chunk = cleaned.copyOfRange(offset, offset + chunkSize)
-                    processor.process(chunk, chunk.size)
-                    System.arraycopy(chunk, 0, cleaned, offset, chunkSize)
-                    offset += chunkSize
+                val channels = parsed.channels.coerceAtLeast(1)
+                val framesPerChannel = cleaned.size / channels
+                val frame = NoiseProcessor.frameSamplesFor(parsed.sampleRate)
+                for (ch in 0 until channels) {
+                    val mono = ShortArray(framesPerChannel)
+                    var i = 0
+                    while (i < framesPerChannel) {
+                        mono[i] = cleaned[i * channels + ch]
+                        i++
+                    }
+                    val processor = NoiseProcessor(
+                        parsed.sampleRate, currentStrength(), true, RnNoise.create()
+                    )
+                    var offset = 0
+                    while (offset < mono.size) {
+                        val chunkSize = minOf(frame, mono.size - offset)
+                        val chunk = mono.copyOfRange(offset, offset + chunkSize)
+                        processor.process(chunk, chunk.size)
+                        System.arraycopy(chunk, 0, mono, offset, chunkSize)
+                        offset += chunkSize
+                    }
+                    processor.close()
+                    i = 0
+                    while (i < framesPerChannel) {
+                        cleaned[i * channels + ch] = mono[i]
+                        i++
+                    }
                 }
                 val outName = "Cleaned_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())}.wav"
                 val outFile = File(recordingsDir(), outName)

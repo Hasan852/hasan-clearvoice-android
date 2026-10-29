@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ClearVoice</string>
-    <string name="app_title">ClearVoice — Creator Recorder</string>
-    <string name="app_subtitle">by HASAN · Record clean voice. No background noise.</string>
+    <string name="brand_label">HASAN · PREMIUM AUDIO</string>
+    <string name="app_title">ClearVoice</string>
+    <string name="app_subtitle">Creator Recorder · AI clean voice, no background noise</string>
     <string name="noise_cancel_title">NOISE CANCELLATION</string>
-    <string name="noise_on">ON — clean voice</string>
+    <string name="noise_on">ON — AI clean voice (RNNoise)</string>
     <string name="noise_off">OFF — raw recording</string>
-    <string name="strength_label">Noise removal strength</string>
+    <string name="strength_label">STRENGTH</string>
     <string name="strength_light">Light</string>
     <string name="strength_medium">Medium</string>
     <string name="strength_strong">Strong</string>

@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#0B0F14</color>
-    <color name="surface">#161C24</color>
-    <color name="surface2">#1F2833</color>
-    <color name="text_primary">#F2F5F7</color>
-    <color name="text_secondary">#9AA7B1</color>
-    <color name="accent">#00D1A9</color>
-    <color name="accent_dark">#00A585</color>
-    <color name="record_red">#E53935</color>
-    <color name="record_red_dark">#B71C1C</color>
+    <!-- Premium dark palette: deep charcoal, glass surfaces, emerald accent, sparing gold -->
+    <color name="bg">#0A0D12</color>
+    <color name="bg_deep">#05070A</color>
+    <color name="bg_top">#11161F</color>
+    <color name="surface">#151B24</color>
+    <color name="surface2">#232D3B</color>
+    <color name="stroke_glass">#2D3949</color>
+    <color name="hero_start">#10231D</color>
+    <color name="hero_end">#121A24</color>
+    <color name="text_primary">#F4F7F9</color>
+    <color name="text_secondary">#9DABB9</color>
+    <color name="text_muted">#5F6D7C</color>
+    <color name="accent">#00DFA8</color>
+    <color name="accent_dark">#00A87E</color>
+    <color name="accent_soft">#14342A</color>
+    <color name="gold">#D8B45C</color>
+    <color name="record_red">#E8402F</color>
+    <color name="record_red_dark">#B3261A</color>
     <color name="warning">#FFB300</color>
-    <color name="launcher_bg">#0B0F14</color>
+    <color name="launcher_bg">#0A0D12</color>
 </resources>

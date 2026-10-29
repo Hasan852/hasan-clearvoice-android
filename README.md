@@ -34,9 +34,26 @@ Where we aim to be better than Krisp: lightweight, generous/free, natural voice
 - Live timer (counts recorded samples, not wall-clock pauses) + live level meter
 
 **Noise cancellation — dedicated big ON/OFF switch**
+- **AI first — RNNoise:** the proven open-source RNN noise-suppression model
+  by Xiph.Org (the same class of technology used by OBS Studio) is vendored
+  in `app/src/main/cpp/rnnoise/` and runs natively per 10 ms frame, before
+  everything else. This is an honest open-source model — **not** Krisp's
+  proprietary model, and not a stub. See `app/src/main/cpp/rnnoise/VENDORED.md`
+  for exact sources, the model tarball URL + SHA-256, and local test evidence.
+  We ship upstream's smaller/faster **"little" model** variant (right for
+  phones; ~2.8 MB compiled weights).
 - Android `NoiseSuppressor` + `AcousticEchoCanceler` + `AutomaticGainControl`
   effects attached when the device supports them
-- Own DSP on top: ~80 Hz high-pass filter, adaptive noise gate, soft limiter
+- Own DSP as polish on top of the AI output: ~80 Hz high-pass filter,
+  adaptive soft-knee noise gate, soft limiter. Strength mapping with AI on:
+  **Light = RNNoise only · Medium = RNNoise + light gate · Strong =
+  RNNoise + medium gate** — the lighter gate polish is what keeps the
+  voice natural instead of over-processed.
+- **Automatic fallback (honest):** if the native library cannot load on a
+  device, or a file is not 48 kHz (RNNoise is 48 kHz only), processing
+  falls back to the DSP-only path automatically. Recording never breaks
+  because of the native library; the recording screen shows whether a
+  take is running "(RNNoise)" AI or "(DSP)".
 - **10 ms response:** audio is processed in 10 ms frames (480 samples @ 48 kHz —
   the same frame size Krisp/RNNoise use), read → clean → write one frame at a
   time, with the smallest AudioRecord buffer the device allows. The DSP adds
@@ -58,9 +75,17 @@ Where we aim to be better than Krisp: lightweight, generous/free, natural voice
 - Play / Share / Delete buttons on every recording in the list
 
 **Import & Clean**
-- Pick an existing **WAV** file, the same DSP cleans it offline, saved as a new
-  `Cleaned_*.wav`. (WAV-only in v1 — decoding MP3/M4A is on the roadmap; keeping
-  v1 decode-free keeps the build dependency-free and reliable.)
+- Pick an existing **WAV** file, the same pipeline (RNNoise AI when the file
+  is 48 kHz + gate polish, per channel) cleans it offline, saved as a new
+  `Cleaned_*.wav`. (WAV-only in v1 — decoding MP3/M4A is on the roadmap;
+  keeping v1 decode-free keeps the build dependency-free and reliable.)
+
+**Premium UI**
+- Dark cinematic theme: deep-charcoal gradient background, glass cards
+  (24 dp corners, hairline strokes), emerald accent with sparing gold
+  highlights, an emerald hero card for the Noise Cancellation switch,
+  strength as segmented pills, a big circular record button with a ring,
+  a rounded emerald level meter, and recordings as clean cards.
 
 ## How to build the APK (GitHub Actions — no PC setup needed)
 
@@ -72,7 +97,10 @@ Where we aim to be better than Krisp: lightweight, generous/free, natural voice
 
 The workflow uses: Java 17 (Temurin), Gradle 8.7 (`gradle/actions/setup-gradle@v4`),
 Android SDK (`android-actions/setup-android@v3`), AGP 8.5.2, Kotlin 1.9.24,
-compileSdk 34, minSdk 26.
+compileSdk 34, minSdk 26 — plus, for the RNNoise native library, NDK
+**26.1.10909125** and CMake **3.22.1** installed via `sdkmanager` in the
+workflow (versions pinned identically in `app/build.gradle.kts`).
+ABIs built: `arm64-v8a`, `armeabi-v7a`, `x86_64`.
 
 ## How to install on a phone
 
@@ -89,10 +117,17 @@ build — that is a later step.
 app/src/main/java/com/hasan/clearvoice/
   MainActivity.kt       UI, recording (Record/Pause/Stop&Save), playback
                         (Play/Pause/Stop), share, delete, import
-  NoiseProcessor.kt     High-pass + adaptive noise gate + soft limiter DSP
+  NoiseProcessor.kt     RNNoise AI stage + high-pass + adaptive gate polish
+                        + soft limiter; automatic DSP-only fallback
+  RnNoise.kt            Kotlin wrapper for the native RNNoise library
   WavFile.kt            PCM16 WAV read / write / header info
   FileShareProvider.kt  Framework-only share provider (no AndroidX needed)
-app/src/main/res/       Dark XML UI, vector adaptive launcher icon
+app/src/main/cpp/
+  CMakeLists.txt        Native build (NDK 26.1.10909125, CMake 3.22.1)
+  clearvoice_jni.cpp    JNI bridge: create / destroy / process 480-float frame
+  rnnoise/              Vendored RNNoise v0.2 sources + "little" model data
+                        (provenance + license: rnnoise/VENDORED.md, COPYING)
+app/src/main/res/       Premium dark XML UI, vector adaptive launcher icon
 .github/workflows/      build-apk.yml — builds and uploads the debug APK
 ```
 
@@ -103,5 +138,6 @@ CI build reliable.
 
 - **v2:** Video recording (camera + clean audio in one take) for creators
 - **v2:** MP3/M4A import decoding, waveform view, trim/silence-cut
-- **v3:** Optional stronger AI model (RNNoise / DeepFilterNet via NDK), signed
+- **v3:** Evaluate DeepFilterNet as an alternative AI model, signed
   release build for Play Store
+- ~~**v3:** RNNoise AI via NDK~~ — **done** (see AI section above)

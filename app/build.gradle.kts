@@ -6,6 +6,9 @@ plugins {
 android {
     namespace = "com.hasan.clearvoice"
     compileSdk = 34
+    // Pinned NDK — must match the version installed in
+    // .github/workflows/build-apk.yml via sdkmanager.
+    ndkVersion = "26.1.10909125"
 
     defaultConfig {
         applicationId = "com.hasan.clearvoice"
@@ -13,6 +16,24 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
+
+        // RNNoise native library (src/main/cpp). CMake 3.22.1 matches the
+        // sdkmanager package installed in CI.
+        externalNativeBuild {
+            cmake {
+                cppFlags += "-std=c++17"
+            }
+        }
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
 
     buildTypes {
