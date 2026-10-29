@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
@@ -17,7 +18,7 @@ import android.widget.ToggleButton
 class MainActivity : Activity() {
 
     private lateinit var switchNoise: Switch
-    private lateinit var btnPower: Button
+    private lateinit var btnPower: ImageButton
     private lateinit var tvPowerState: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +83,7 @@ class MainActivity : Activity() {
         val on = AppSettings.noiseOn(this)
         if (switchNoise.isChecked != on) switchNoise.isChecked = on
         btnPower.setBackgroundResource(if (on) R.drawable.circle_power_on else R.drawable.circle_power_off)
-        btnPower.setTextColor(if (on) 0xFFFFFFFF.toInt() else 0xFF5F6D7C.toInt())
+        btnPower.setColorFilter(if (on) 0xFFFFFFFF.toInt() else 0xFF5F6D7C.toInt())
         tvPowerState.text = if (on) "AI Noise Cancellation is ON" else "AI Noise Cancellation is OFF"
     }
 }

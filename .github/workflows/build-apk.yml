@@ -96,17 +96,22 @@ jobs:
             sleep 6
             adb exec-out screencap -p > home.png
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open record
-            sleep 3
+            sleep 4
+            adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > record.png
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open clean
-            sleep 3
+            sleep 4
+            adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > clean.png
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open files
-            sleep 3
+            sleep 4
+            adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > files.png
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open settings
-            sleep 3
+            sleep 4
+            adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > settings.png
+            adb logcat -d | grep -iE "FATAL|AndroidRuntime" | head -20 || true
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v4
