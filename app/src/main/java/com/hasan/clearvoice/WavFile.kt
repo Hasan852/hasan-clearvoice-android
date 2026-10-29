@@ -50,7 +50,7 @@ object WavFile {
         writeWavBytes(file, pcm.array(), sampleRate, channels, 16)
     }
 
-    fun writeWavBytes(file: File, pcmData: ByteArray, sampleRate: Int, channels: Int, bitsPerSample: Int) {
+    fun writeWavBytes(file: File, pcmData: ByteArray, sampleRate: Int, channels: Int, bitsPerSample: Int = 16) {
         file.parentFile?.mkdirs()
         FileOutputStream(file).use { out ->
             out.write(buildHeader(pcmData.size, sampleRate, channels, bitsPerSample))
