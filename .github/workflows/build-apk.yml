@@ -20,15 +20,19 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # GitHub's ubuntu runners already ship the Android SDK
+      # (ANDROID_HOME + cmdline-tools). We install packages directly
+      # with sdkmanager instead of android-actions/setup-android,
+      # whose default legacy `tools` package no longer exists in the
+      # SDK repository and fails the step ("Failed to find package
+      # 'tools'", run 40867629774).
       # RNNoise is a native (C/C++) library — the NDK + CMake versions
       # here must match ndkVersion / externalNativeBuild in
       # app/build.gradle.kts.
-      - name: Install NDK and CMake
+      - name: Install Android SDK packages (platform, build-tools, NDK, CMake)
         run: |
-          sdkmanager "ndk;26.1.10909125" "cmake;3.22.1"
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" "ndk;26.1.10909125" "cmake;3.22.1"
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/26.1.10909125" >> "$GITHUB_ENV"
 
       - name: Set up Gradle 8.7
