@@ -26,10 +26,24 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         bindViews()
         setupListeners()
-        // Deep-link hook used by the CI emulator screenshot job (the other
-        // activities are not exported, so adb cannot start them directly):
-        //   adb shell am start -n com.hasan.clearvoice/.MainActivity --es open record
-        when (intent?.getStringExtra("open")) {
+        handleOpenExtra(intent)
+    }
+
+    override fun onNewIntent(intent: android.content.Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleOpenExtra(intent)
+    }
+
+    /**
+     * Deep-link hook used by the CI emulator screenshot job (the other
+     * activities are not exported, so adb cannot start them directly):
+     *   adb shell am start -n com.hasan.clearvoice/.MainActivity --es open record
+     * When the app is already running, adb delivers the intent to the
+     * running instance via onNewIntent — hence both entry points.
+     */
+    private fun handleOpenExtra(source: android.content.Intent?) {
+        when (source?.getStringExtra("open")) {
             "record" -> startActivity(android.content.Intent(this, RecordActivity::class.java))
             "clean" -> startActivity(android.content.Intent(this, CleanActivity::class.java))
             "files" -> startActivity(android.content.Intent(this, FilesActivity::class.java))
