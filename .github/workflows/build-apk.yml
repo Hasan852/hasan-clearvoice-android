@@ -95,18 +95,22 @@ jobs:
             adb shell am start -n com.hasan.clearvoice/.MainActivity
             sleep 6
             adb exec-out screencap -p > home.png
+            adb shell am force-stop com.hasan.clearvoice
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open record
             sleep 4
             adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > record.png
+            adb shell am force-stop com.hasan.clearvoice
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open clean
             sleep 4
             adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > clean.png
+            adb shell am force-stop com.hasan.clearvoice
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open files
             sleep 4
             adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
             adb exec-out screencap -p > files.png
+            adb shell am force-stop com.hasan.clearvoice
             adb shell am start -n com.hasan.clearvoice/.MainActivity --es open settings
             sleep 4
             adb shell dumpsys activity activities | grep -m1 topResumedActivity || true
