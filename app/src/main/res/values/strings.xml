@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClearVoice</string>
+    <string name="app_title">ClearVoice — Creator Recorder</string>
+    <string name="app_subtitle">by HASAN · Record clean voice. No background noise.</string>
+    <string name="noise_cancel_title">NOISE CANCELLATION</string>
+    <string name="noise_on">ON — clean voice</string>
+    <string name="noise_off">OFF — raw recording</string>
+    <string name="strength_label">Noise removal strength</string>
+    <string name="strength_light">Light</string>
+    <string name="strength_medium">Medium</string>
+    <string name="strength_strong">Strong</string>
+    <string name="record">● Record</string>
+    <string name="pause_record">⏸ Pause</string>
+    <string name="resume_record">▶ Resume</string>
+    <string name="stop_save">■ Stop &amp; Save</string>
+    <string name="play">▶ Play</string>
+    <string name="pause_playback">⏸ Pause</string>
+    <string name="stop_playback">■ Stop</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="import_clean">Import WAV &amp; Clean It</string>
+    <string name="recordings">Your recordings</string>
+    <string name="no_recordings">No recordings yet. Press Record to make your first clean voice note.</string>
+    <string name="ready">Ready</string>
+    <string name="now_playing_none">No file selected for playback</string>
+</resources>

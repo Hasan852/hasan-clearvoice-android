@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0B0F14</color>
+    <color name="surface">#161C24</color>
+    <color name="surface2">#1F2833</color>
+    <color name="text_primary">#F2F5F7</color>
+    <color name="text_secondary">#9AA7B1</color>
+    <color name="accent">#00D1A9</color>
+    <color name="accent_dark">#00A585</color>
+    <color name="record_red">#E53935</color>
+    <color name="record_red_dark">#B71C1C</color>
+    <color name="warning">#FFB300</color>
+    <color name="launcher_bg">#0B0F14</color>
+</resources>
