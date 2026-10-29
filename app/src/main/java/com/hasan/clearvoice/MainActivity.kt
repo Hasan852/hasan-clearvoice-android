@@ -212,7 +212,12 @@ class MainActivity : Activity() {
             toast("This device does not support 48kHz mono recording")
             return
         }
-        val bufferSize = maxOf(minBuffer, SAMPLE_RATE / 5 * 2)
+        // Low latency: AudioRecord buffer = just 4 x 10ms frames (the
+        // smallest the device allows wins if its minimum is larger).
+        // Processing below reads and cleans exactly one 10ms frame at
+        // a time, so the DSP never waits on a big buffer.
+        val frameBytes = NoiseProcessor.frameSamplesFor(SAMPLE_RATE) * 2
+        val bufferSize = maxOf(minBuffer, frameBytes * 4)
         val recorder: AudioRecord
         try {
             recorder = AudioRecord(
@@ -247,7 +252,8 @@ class MainActivity : Activity() {
         mainHandler.post(timerRunnable)
 
         recordingThread = Thread {
-            val buffer = ShortArray(2048)
+            // One 10ms frame per read/process/write cycle.
+            val buffer = ShortArray(NoiseProcessor.frameSamplesFor(SAMPLE_RATE))
             val byteBuffer = ByteBuffer.allocate(buffer.size * 2).order(ByteOrder.LITTLE_ENDIAN)
             val started = try {
                 recorder.startRecording()

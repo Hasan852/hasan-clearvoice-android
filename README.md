@@ -37,6 +37,16 @@ Where we aim to be better than Krisp: lightweight, generous/free, natural voice
 - Android `NoiseSuppressor` + `AcousticEchoCanceler` + `AutomaticGainControl`
   effects attached when the device supports them
 - Own DSP on top: ~80 Hz high-pass filter, adaptive noise gate, soft limiter
+- **10 ms response:** audio is processed in 10 ms frames (480 samples @ 48 kHz —
+  the same frame size Krisp/RNNoise use), read → clean → write one frame at a
+  time, with the smallest AudioRecord buffer the device allows. The DSP adds
+  one 10 ms frame of delay; total phone latency also depends on the device's
+  own audio buffer, which no app can remove.
+- **Natural voice, not robotic:** robotic sound comes from a gate slamming
+  per-sample. ClearVoice decides gain once per frame and *ramps* it smoothly,
+  uses a soft knee instead of a hard cut, keeps a 200 ms hold so word tails
+  are never clipped, and never drops background to dead silence on
+  Light/Medium.
 - **3 strength levels:** Light / Medium / Strong
 - **OFF = raw recording.** Effects and DSP are fully bypassed so you can record
   the same line twice and compare clean vs raw yourself.
