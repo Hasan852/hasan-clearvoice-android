@@ -2,332 +2,292 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:background="@drawable/bg_app"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:letterSpacing="0.32"
-        android:text="@string/brand_label"
-        android:textColor="@color/gold"
-        android:textSize="11sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvTitle"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:letterSpacing="0.01"
-        android:text="@string/app_title"
-        android:textColor="@color/text_primary"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="@string/app_subtitle"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
-
-    <!-- HERO: Big dedicated NOISE CANCEL toggle -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:background="@drawable/card_hero"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ClearVoice PRO"
+                    android:textColor="@color/text_primary"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnSettingsGear"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/circle_icon_btn"
+                    android:text="⚙"
+                    android:textColor="@color/text_primary"
+                    android:textSize="17sp" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:letterSpacing="0.18"
-                android:text="@string/noise_cancel_title"
+                android:text="AI Noise Cancellation"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:gravity="center"
+                android:text="Pure Sound\nIn Every Moment"
                 android:textColor="@color/text_primary"
-                android:textSize="16sp"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvNoiseStatus"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:text="@string/noise_on"
-                android:textColor="@color/accent"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="AI powered noise cancellation for\nrecording, calls and audio files"
+                android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/cardRecord"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/card_navy2"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎙"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Record"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Record with AI noise cancellation"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardClean"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/card_navy2"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🗂"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Clean Audio"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Upload any audio file and remove noise"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_navy"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Noise Cancellation"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/switchNoise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnPower"
+                android:layout_width="168dp"
+                android:layout_height="168dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/circle_power_on"
+                android:text="⏻"
+                android:textColor="#FFFFFF"
+                android:textSize="42sp" />
+
+            <TextView
+                android:id="@+id/tvPowerState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="AI Noise Cancellation is ON"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="● Live · 10 ms latency"
+                android:textColor="@color/accent"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:id="@+id/chipAuto"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/chip_mode"
+                    android:textColor="@color/chip_text"
+                    android:textOff="Auto"
+                    android:textOn="Auto"
+                    android:textSize="12sp" />
+
+                <ToggleButton
+                    android:id="@+id/chipVoice"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/chip_mode"
+                    android:textColor="@color/chip_text"
+                    android:textOff="Voice Focus"
+                    android:textOn="Voice Focus"
+                    android:textSize="12sp" />
+
+                <ToggleButton
+                    android:id="@+id/chipDeep"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/chip_mode"
+                    android:textColor="@color/chip_text"
+                    android:textOff="Deep Noise"
+                    android:textOn="Deep Noise"
+                    android:textSize="12sp" />
+
+                <ToggleButton
+                    android:id="@+id/chipMusic"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/chip_mode"
+                    android:textColor="@color/chip_text"
+                    android:textOff="Music Mode"
+                    android:textOn="Music Mode"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_navy"
+                android:orientation="horizontal"
+                android:padding="14dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="10 ms\nUltra Low Latency"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="AI Powered\nReal-time Processing"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="99%\nNoise Reduction"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <Switch
-            android:id="@+id/switchNoiseCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
-            android:padding="12dp" />
-    </LinearLayout>
-
-    <!-- Strength as segmented pills -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/card_bg"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:letterSpacing="0.14"
-            android:text="@string/strength_label"
-            android:textColor="@color/text_muted"
-            android:textSize="11sp"
-            android:textStyle="bold" />
-
-        <RadioGroup
-            android:id="@+id/rgStrength"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rbLight"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/segment_pill"
-                android:button="@null"
-                android:gravity="center"
-                android:text="@string/strength_light"
-                android:textColor="@color/segment_text"
-                android:textSize="14sp" />
-
-            <RadioButton
-                android:id="@+id/rbMedium"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/segment_pill"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="@string/strength_medium"
-                android:textColor="@color/segment_text"
-                android:textSize="14sp" />
-
-            <RadioButton
-                android:id="@+id/rbStrong"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/segment_pill"
-                android:button="@null"
-                android:gravity="center"
-                android:text="@string/strength_strong"
-                android:textColor="@color/segment_text"
-                android:textSize="14sp" />
-        </RadioGroup>
-    </LinearLayout>
-
-    <!-- Timer / state / level inside a glass card -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/card_bg"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvTimer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="00:00"
-            android:textColor="@color/text_primary"
-            android:textSize="46sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvRecordingState"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/ready"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
-
-        <ProgressBar
-            android:id="@+id/pbLevel"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_marginTop="12dp"
-            android:max="100"
-            android:progress="0"
-            android:progressDrawable="@drawable/level_meter" />
-    </LinearLayout>
-
-    <!-- Recorder controls: Pause | big circular Record | Stop & Save -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnPauseRecord"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_secondary"
-            android:enabled="false"
-            android:text="@string/pause_record"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btnRecord"
-            android:layout_width="92dp"
-            android:layout_height="92dp"
-            android:layout_marginStart="14dp"
-            android:background="@drawable/button_record"
-            android:text="@string/record"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnStopSave"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="14dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_secondary"
-            android:enabled="false"
-            android:text="@string/stop_save"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <!-- Playback controls for the selected / last recording -->
-    <TextView
-        android:id="@+id/tvNowPlaying"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ellipsize="middle"
-        android:singleLine="true"
-        android:text="@string/now_playing_none"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnPlay"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_primary"
-            android:text="@string/play"
-            android:textColor="#052E22" />
-
-        <Button
-            android:id="@+id/btnPausePlayback"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_secondary"
-            android:text="@string/pause_playback"
-            android:textColor="@color/text_primary" />
-
-        <Button
-            android:id="@+id/btnStopPlayback"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_secondary"
-            android:text="@string/stop_playback"
-            android:textColor="@color/text_primary" />
-
-        <Button
-            android:id="@+id/btnShareLast"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_secondary"
-            android:text="@string/share"
-            android:textColor="@color/text_primary" />
-
-        <Button
-            android:id="@+id/btnDeleteLast"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_secondary"
-            android:text="@string/delete"
-            android:textColor="@color/record_red" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnImport"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/button_secondary"
-        android:text="@string/import_clean"
-        android:textColor="@color/gold" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:letterSpacing="0.06"
-        android:text="@string/recordings"
-        android:textColor="@color/text_primary"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="@string/no_recordings"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
-
-    <ListView
-        android:id="@+id/lvRecordings"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="10dp" />
+    <include layout="@layout/bottom_nav" />
 </LinearLayout>

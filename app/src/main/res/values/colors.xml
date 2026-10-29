@@ -20,4 +20,13 @@
     <color name="record_red_dark">#B3261A</color>
     <color name="warning">#FFB300</color>
     <color name="launcher_bg">#0A0D12</color>
+    <!-- v2 navy premium palette (Hasan's chosen design) -->
+    <color name="bg_navy">#04070F</color>
+    <color name="bg_navy_deep">#020409</color>
+    <color name="surface_navy">#0B1526</color>
+    <color name="surface_navy2">#111F36</color>
+    <color name="stroke_navy">#1D2F4B</color>
+    <color name="blue">#2E7CF6</color>
+    <color name="blue_light">#38B6FF</color>
+    <color name="blue_deep">#1550B8</color>
 </resources>

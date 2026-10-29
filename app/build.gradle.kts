@@ -14,8 +14,8 @@ android {
         applicationId = "com.hasan.clearvoice"
         minSdk = 26
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.2.0"
+        versionCode = 4
+        versionName = "2.0.0"
 
         // RNNoise native library (src/main/cpp). CMake 3.22.1 matches the
         // sdkmanager package installed in CI.

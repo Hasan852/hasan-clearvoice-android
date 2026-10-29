@@ -62,6 +62,45 @@ object WavFile {
         writeWavBytes(target, pcmData, sampleRate, channels, 16)
     }
 
+    /** Peak absolute sample value in a PCM16 little-endian buffer. */
+    fun peakAbs(pcmData: ByteArray): Int {
+        var peak = 0
+        var i = 0
+        while (i + 1 < pcmData.size) {
+            val v = (pcmData[i].toInt() and 0xFF) or (pcmData[i + 1].toInt() shl 8)
+            val s = if (v >= 0x8000) v - 0x10000 else v
+            val a = if (s < 0) -s else s
+            if (a > peak) peak = a
+            i += 2
+        }
+        return peak
+    }
+
+    /**
+     * Loudness normalisation for saved audio (fixes "recording too
+     * quiet on playback"): returns a gained copy whose peak reaches
+     * ~0.95 of full scale, with the gain capped so near-silent files
+     * are not blown up. Returns the input unchanged when it is
+     * already loud enough.
+     */
+    fun normalizedCopy(pcmData: ByteArray, maxGain: Float = 8f): ByteArray {
+        val peak = peakAbs(pcmData)
+        if (peak <= 0) return pcmData
+        val gain = minOf(31129f / peak, maxGain) // 31129 ≈ 0.95 * 32767
+        if (gain <= 1.05f) return pcmData
+        val out = ByteArray(pcmData.size)
+        var i = 0
+        while (i + 1 < pcmData.size) {
+            val v = (pcmData[i].toInt() and 0xFF) or (pcmData[i + 1].toInt() shl 8)
+            val s = if (v >= 0x8000) v - 0x10000 else v
+            val g = (s * gain).toInt().coerceIn(-32768, 32767)
+            out[i] = (g and 0xFF).toByte()
+            out[i + 1] = (g shr 8 and 0xFF).toByte()
+            i += 2
+        }
+        return out
+    }
+
     fun buildHeader(dataSize: Int, sampleRate: Int, channels: Int, bitsPerSample: Int): ByteArray {
         val byteRate = sampleRate * channels * bitsPerSample / 8
         val blockAlign = channels * bitsPerSample / 8

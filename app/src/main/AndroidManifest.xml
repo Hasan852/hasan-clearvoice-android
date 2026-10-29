@@ -23,6 +23,18 @@
 
         <!-- Framework-only FileProvider replacement: serves WAV files for Share.
              See FileShareProvider.kt — no AndroidX dependency needed. -->
+        <activity
+            android:name=".RecordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CleanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FilesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
         <provider
             android:name=".FileShareProvider"
             android:authorities="com.hasan.clearvoice.fileprovider"

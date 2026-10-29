@@ -64,3 +64,58 @@ jobs:
           name: ClearVoice-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+  screenshot:
+    name: Emulator UI screenshots
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built APK
+        uses: actions/download-artifact@v4
+        with:
+          name: ClearVoice-debug-apk
+          path: apk
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run emulator and capture UI
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r apk/app-debug.apk
+            adb shell am start -n com.hasan.clearvoice/.MainActivity
+            sleep 6
+            adb exec-out screencap -p > home.png
+            adb shell am start -n com.hasan.clearvoice/.RecordActivity
+            sleep 3
+            adb exec-out screencap -p > record.png
+            adb shell am start -n com.hasan.clearvoice/.CleanActivity
+            sleep 3
+            adb exec-out screencap -p > clean.png
+            adb shell am start -n com.hasan.clearvoice/.FilesActivity
+            sleep 3
+            adb exec-out screencap -p > files.png
+            adb shell am start -n com.hasan.clearvoice/.SettingsActivity
+            sleep 3
+            adb exec-out screencap -p > settings.png
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClearVoice-UI-screenshots
+          path: |
+            home.png
+            record.png
+            clean.png
+            files.png
+            settings.png
+          if-no-files-found: error
