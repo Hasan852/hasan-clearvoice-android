@@ -31,6 +31,15 @@ target_include_directories(
 # -w silences upstream warnings in vendored code only.
 target_compile_options(clearvoice_rnnoise PRIVATE -O2 -w)
 
+# CRASH FIX (v1.1): force RNNoise's generic C vector path on every ABI.
+# The ARM NEON path (vec_neon.h) was compile-tested in CI but never
+# runtime-tested on a real device — it is the prime suspect for the
+# on-device crash reported on v1.0 (native crashes cannot be caught
+# from Kotlin). The generic C path is the same code path that passed
+# the host runtime test, and RNNoise generic C is still real-time
+# capable on modern phone CPUs (10ms frame budget).
+target_compile_definitions(clearvoice_rnnoise PRIVATE DISABLE_NEON)
+
 find_library(log-lib log)
 
 target_link_libraries(

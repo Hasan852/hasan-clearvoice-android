@@ -44,6 +44,12 @@ class MainActivity : Activity() {
         private const val SAMPLE_RATE = 48000
         private const val REQUEST_RECORD_AUDIO = 1001
         private const val REQUEST_IMPORT_WAV = 2002
+
+        /** RAM cap for one recording's PCM buffer (~31 min) — see recording loop. */
+        private const val MAX_PCM_BYTES = 180 * 1024 * 1024
+
+        /** Import guard: refuse huge files instead of OOM-crashing while cleaning. */
+        private const val MAX_IMPORT_BYTES = 120L * 1024 * 1024
     }
 
     private enum class RecordState { IDLE, RECORDING, PAUSED }
@@ -270,6 +276,8 @@ class MainActivity : Activity() {
             } catch (e: IllegalStateException) {
                 false
             }
+            var framesSinceUiUpdate = 0
+            var limitNoticePosted = false
             while (started && recordState != RecordState.IDLE) {
                 val read = try {
                     recorder.read(buffer, 0, buffer.size)
@@ -293,8 +301,28 @@ class MainActivity : Activity() {
                     pcmOutput?.write(byteBuffer.array(), 0, read * 2)
                 }
                 samplesWritten += read
-                val level = (peak * 100).roundToInt().coerceIn(0, 100)
-                mainHandler.post { if (recordState != RecordState.IDLE) pbLevel.progress = level }
+                // Smoothness: update the level meter every 5th frame
+                // (~50 ms), not every 10 ms frame — posting to the UI
+                // thread 100x/sec floods it and makes the app feel janky.
+                framesSinceUiUpdate++
+                if (framesSinceUiUpdate >= 5) {
+                    framesSinceUiUpdate = 0
+                    val level = (peak * 100).roundToInt().coerceIn(0, 100)
+                    mainHandler.post { if (recordState != RecordState.IDLE) pbLevel.progress = level }
+                }
+                // Crash guard: PCM is buffered in RAM while recording.
+                // Cap it (~180 MB ≈ 31 min at 48kHz mono) and auto-save
+                // instead of running the phone out of memory (OOM crash
+                // on very long recordings).
+                if (!limitNoticePosted && (pcmOutput?.size() ?: 0) > MAX_PCM_BYTES) {
+                    limitNoticePosted = true
+                    mainHandler.post {
+                        if (recordState != RecordState.IDLE) {
+                            toast("Maximum recording length reached — saving")
+                            onStopSaveClicked()
+                        }
+                    }
+                }
             }
             try {
                 recorder.stop()
@@ -580,8 +608,24 @@ class MainActivity : Activity() {
         toast("Cleaning imported file…")
         Thread {
             try {
+                // Size guard first (when the provider reports a size):
+                // loading a huge WAV fully into RAM would OOM-crash.
+                val reportedSize = try {
+                    contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.SIZE), null, null, null)
+                        ?.use { c -> if (c.moveToFirst()) c.getLong(0) else -1L } ?: -1L
+                } catch (e: Exception) {
+                    -1L
+                }
+                if (reportedSize > MAX_IMPORT_BYTES) {
+                    mainHandler.post { toast("File is too large to clean (max ~120 MB)") }
+                    return@Thread
+                }
                 val bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() }
                     ?: throw IllegalStateException("Could not read the selected file")
+                if (bytes.size > MAX_IMPORT_BYTES) {
+                    mainHandler.post { toast("File is too large to clean (max ~120 MB)") }
+                    return@Thread
+                }
                 val parsed = WavFile.readWav(bytes)
                 // Offline cleaning always applies processing (that is the point
                 // of the button), using the currently selected strength.
@@ -628,8 +672,12 @@ class MainActivity : Activity() {
                     toast("Cleaned file saved: ${outFile.name}")
                     refreshRecordings()
                 }
-            } catch (e: Exception) {
-                mainHandler.post { toast("Import failed: ${e.message}") }
+            } catch (t: Throwable) {
+                // Throwable, not just Exception: an OutOfMemoryError on a
+                // borderline file must show a message, never crash the app.
+                val msg = if (t is OutOfMemoryError) "File is too large to clean on this phone"
+                else "Import failed: ${t.message}"
+                mainHandler.post { toast(msg) }
             }
         }.start()
     }
@@ -660,8 +708,14 @@ class MainActivity : Activity() {
     private inner class RecordingAdapter : BaseAdapter() {
         private var files: List<File> = emptyList()
 
+        // Meta text (date/duration/size) is computed ONCE per refresh, not
+        // on every getView() scroll pass — reading WAV headers from disk
+        // inside getView causes visible scroll jank with many recordings.
+        private var metas: List<String> = emptyList()
+
         fun setFiles(newFiles: List<File>) {
             files = newFiles
+            metas = newFiles.map { metaText(it) }
             notifyDataSetChanged()
         }
 
@@ -676,7 +730,8 @@ class MainActivity : Activity() {
                 .inflate(R.layout.item_recording, parent, false)
             val file = files[position]
             view.findViewById<TextView>(R.id.tvItemName).text = file.name
-            view.findViewById<TextView>(R.id.tvItemMeta).text = metaText(file)
+            view.findViewById<TextView>(R.id.tvItemMeta).text =
+                metas.getOrElse(position) { metaText(file) }
             view.findViewById<Button>(R.id.btnItemPlay).setOnClickListener { playFile(file) }
             view.findViewById<Button>(R.id.btnItemShare).setOnClickListener { shareFile(file) }
             view.findViewById<Button>(R.id.btnItemDelete).setOnClickListener { confirmDelete(file) }
@@ -687,7 +742,13 @@ class MainActivity : Activity() {
     private fun metaText(file: File): String {
         val date = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.US).format(Date(file.lastModified()))
         val size = formatSize(file.length())
-        val info = WavFile.readInfo(file)
+        // readInfo can throw IOException if the file vanishes mid-read —
+        // a broken list entry must never crash the app; show --:-- instead.
+        val info = try {
+            WavFile.readInfo(file)
+        } catch (e: Exception) {
+            null
+        }
         val duration = if (info != null) formatTime(info.durationSeconds.toLong()) else "--:--"
         return "$date  ·  $duration  ·  $size"
     }
