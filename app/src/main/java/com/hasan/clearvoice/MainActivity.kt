@@ -133,6 +133,13 @@ class MainActivity : Activity() {
         btnStopSave = findViewById(R.id.btnStopSave)
         btnPlay = findViewById(R.id.btnPlay)
         btnPausePlayback = findViewById(R.id.btnPausePlayback)
+        // CRASH FIX (v1.2): lvRecordings was declared lateinit but NEVER
+        // assigned here — setupListeners() then touched it during
+        // onCreate, throwing UninitializedPropertyAccessException and
+        // crashing the app instantly on every launch (v1.0 + v1.1).
+        // scripts/check_lateinit.py now runs in CI to catch this class
+        // of bug before any future build ships.
+        lvRecordings = findViewById(R.id.lvRecordings)
     }
 
     private fun setupListeners() {

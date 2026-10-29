@@ -14,6 +14,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      # Regression guard for the v1.0/v1.1 launch crash: a lateinit view
+      # (lvRecordings) was never assigned but used in onCreate. Blocks
+      # the build if any lateinit var in MainActivity lacks an assignment.
+      - name: Check lateinit assignments (launch-crash guard)
+        run: python3 scripts/check_lateinit.py
+
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
