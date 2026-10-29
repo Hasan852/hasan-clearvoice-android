@@ -95,16 +95,16 @@ jobs:
             adb shell am start -n com.hasan.clearvoice/.MainActivity
             sleep 6
             adb exec-out screencap -p > home.png
-            adb shell am start -n com.hasan.clearvoice/.RecordActivity
+            adb shell am start -n com.hasan.clearvoice/.MainActivity --es open record
             sleep 3
             adb exec-out screencap -p > record.png
-            adb shell am start -n com.hasan.clearvoice/.CleanActivity
+            adb shell am start -n com.hasan.clearvoice/.MainActivity --es open clean
             sleep 3
             adb exec-out screencap -p > clean.png
-            adb shell am start -n com.hasan.clearvoice/.FilesActivity
+            adb shell am start -n com.hasan.clearvoice/.MainActivity --es open files
             sleep 3
             adb exec-out screencap -p > files.png
-            adb shell am start -n com.hasan.clearvoice/.SettingsActivity
+            adb shell am start -n com.hasan.clearvoice/.MainActivity --es open settings
             sleep 3
             adb exec-out screencap -p > settings.png
 

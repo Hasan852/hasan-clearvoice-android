@@ -25,6 +25,15 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         bindViews()
         setupListeners()
+        // Deep-link hook used by the CI emulator screenshot job (the other
+        // activities are not exported, so adb cannot start them directly):
+        //   adb shell am start -n com.hasan.clearvoice/.MainActivity --es open record
+        when (intent?.getStringExtra("open")) {
+            "record" -> startActivity(android.content.Intent(this, RecordActivity::class.java))
+            "clean" -> startActivity(android.content.Intent(this, CleanActivity::class.java))
+            "files" -> startActivity(android.content.Intent(this, FilesActivity::class.java))
+            "settings" -> startActivity(android.content.Intent(this, SettingsActivity::class.java))
+        }
     }
 
     override fun onResume() {
